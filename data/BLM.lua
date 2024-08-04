@@ -58,14 +58,17 @@ function job_setup()
     LowTierNukes = S{'Stone', 'Water', 'Aero', 'Fire', 'Blizzard', 'Thunder',
         'Stone II', 'Water II', 'Aero II', 'Fire II', 'Blizzard II', 'Thunder II',
         'Stonega', 'Waterga', 'Aeroga', 'Firaga', 'Blizzaga', 'Thundaga'}
+	
+	    CumulativeElemental = S{'Stoneja', 'Waterja', 'Aeroja', 'Firaja', 'Blizzaja', 'Thundaja'}
 		
     AutoManawellSpells = S{'Impact'}
 	AutoManawellOccultSpells = S{'Impact','Meteor','Thundaja','Blizzaja','Firaja','Thunder VI','Blizzard VI',}
 
 	state.DeathMode = M{['description'] = 'Death Mode', 'Off', 'Single', 'Lock'}
+	state.QuickMagic = M{['description'] = 'InstantCast', 'On','Off'}
 	state.AutoManawell = M(true, 'Auto Manawell Mode')
 	state.RecoverMode = M('35%', '60%', 'Always', 'Never')
-
+	state.AutoArts 	= M(true, 'AutoArts') 		 --Set this to false if you don't want to automatically try to keep up Solace/Arts.
 	autows = 'Myrkr'
 	autofood = 'Pear Crepe'
 	
@@ -125,8 +128,9 @@ function job_precast(spell, spellMap, eventArgs)
 end
 
 function job_post_precast(spell, spellMap, eventArgs)
-
-	if spell.action_type == 'Magic' and state.DeathMode.value ~= 'Off' then
+	if spell.action_type == 'Magic' and spell.english ~= 'Impact' and spell.english ~= 'Death' and state.QuickMagic.value ~= 'Off' then
+		equip(sets.precast.FC.QuickMagic)
+	elseif spell.action_type == 'Magic' and state.DeathMode.value ~= 'Off' then
 		if sets.precast.FC[spell.english] and sets.precast.FC[spell.english].Death then
 			equip(sets.precast.FC[spell.english].Death)
 		elseif sets.precast.FC[spellMap] and sets.precast.FC[spellMap].Death then
@@ -170,6 +174,8 @@ function job_post_midcast(spell, spellMap, eventArgs)
 			if state.MagicBurstMode.value ~= 'Off' then
 				if state.CastingMode.value:contains('Resistant') and sets.ResistantMagicBurst then
 					equip(sets.ResistantMagicBurst)
+				elseif CumulativeElemental:contains(spell.english) then
+					equip(sets.CumulativeElementalMagicBurst)
 				else
 					equip(sets.MagicBurst)
 				end
@@ -265,6 +271,8 @@ function job_get_spell_map(spell, default_spell_map)
 			return
         elseif LowTierNukes:contains(spell.english) then
             return 'LowTierNuke'
+        elseif CumulativeElemental:contains(spell.english) then
+            return 'CumulativeElemental'
         else
             return 'HighTierNuke'
         end
@@ -292,11 +300,11 @@ function job_customize_idle_set(idleSet)
     end
 
     if state.IdleMode.value == 'Normal' or state.IdleMode.value:contains('Sphere') then
-		if player.mpp < 51 then
+		if player.mpp < 70 then
 			if sets.latent_refresh then
 				idleSet = set_combine(idleSet, sets.latent_refresh)
 			end
-			
+		
 			if (state.Weapons.value == 'None' or state.UnlockWeapons.value) and idleSet.main then
 				local main_table = get_item_table(idleSet.main)
 
@@ -307,6 +315,11 @@ function job_customize_idle_set(idleSet)
 				if player.tp > 10 and sets.TPEat then
 					idleSet = set_combine(idleSet, sets.TPEat)
 				end
+			end
+		end
+		if player.mpp < 51 then
+			if sets.full_latent_refresh then
+				idleSet = set_combine(idleSet, sets.full_latent_refresh)
 			end
 		end
    end

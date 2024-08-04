@@ -68,6 +68,8 @@ ProshellraAbility = S{"Protectra","Protectra II","Protectra III","Protectra IV",
 				 
 RefreshAbility = S{"Refresh","Refresh II", "Refresh III"
 				 }
+RegenAbility = S{"Regen","Regen II", "Regen III", "Regen IV", "Regen V"
+				 }
 				 
 PhalanxAbility = S{"Phalanx II"
 				 }
@@ -252,6 +254,13 @@ function check_reaction(act)
 				do_equip('sets.Self_Refresh')
 			end
 			return
+		elseif RegenAbility:contains(act_info.name) then
+			if sets.Regen_Received then
+				do_equip('sets.Regen_Received')
+			elseif sets.Self_Regen then
+				do_equip('sets.Self_Regen')
+			end
+			return
 		elseif PhalanxAbility:contains(act_info.name) then
 			if sets.Phalanx_Received then
 				do_equip('sets.Phalanx_Received')
@@ -341,7 +350,7 @@ function check_reaction(act)
 				local defensive_action = false
 				if not midaction() then
 					local abil_recasts = windower.ffxi.get_ability_recasts()
-					if state.AutoSuperJumpMode.value and  abil_recasts[160] and abil_recasts[160] < latency then
+					if player.main_job == 'DRG' and state.AutoSuperJumpMode.value and abil_recasts[160] < latency then
 						windower.chat.input('/ja "Super Jump" <t>')
 						defensive_action = true
 					elseif (player.main_job == 'SAM' or player.sub_job == 'SAM') and ability_type == 'Physical' and abil_recasts[133] < latency then

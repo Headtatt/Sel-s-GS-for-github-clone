@@ -330,6 +330,12 @@ function refine_waltz(spell, spellMap, eventArgs)
 				newWaltz = 'Curing Waltz II'
 				waltzID = 191
 			end
+		elseif state.AutoContradanceMode.value and abil_recasts[229] < latency then
+			eventArgs.cancel = true
+			windower.chat.input('/ja "Contradance" <me>')
+			windower.chat.input:schedule(.5,'/ja "Curing Waltz III" '..spell.target.raw..'')
+			return true
+		
 		elseif missingHP < 300 then
 			if abil_recasts[186] < latency then
 				newWaltz = 'Curing Waltz II'
@@ -606,7 +612,7 @@ function set_macro_page(set,book)
             add_to_chat(123,'Error setting macro page: Macro book ('..tostring(book)..') must be between 1 and 40.')
             return
         end
-        send_command('@input /macro book '..tostring(book)..';wait 2;input /macro set '..tostring(set))
+        send_command('@input /macro book '..tostring(book)..';wait .1;input /macro set '..tostring(set))
     else
         send_command('@input /macro set '..tostring(set))
     end
@@ -1008,7 +1014,7 @@ function check_midaction(spell, spellMap, eventArgs)
 		if eventArgs and not (spell.type:startswith('BloodPact') and state.Buff["Astral Conduit"]) then
 			eventArgs.cancel = true
 			if delayed_cast == '' and state.MiniQueue.value then
-				windower.send_command:schedule((next_cast - os.clock()),'gs c delayedcast')
+				windower.send_command:schedule((next_cast - os.clock() + 0.1),'gs c delayedcast')
 			end
 			delayed_cast = spell.english
 			delayed_target = spell.target.id
@@ -1362,7 +1368,12 @@ function check_cleanup()
 		if items.count_sack < items.max_sack then
 			if player.inventory['Pellucid Stone'] then send_command('put "Pellucid Stone" sack all') moveditem = true end
 			if player.inventory['Taupe Stone'] then send_command('put "Taupe Stone" sack all') moveditem = true end
+			if player.inventory['S. Astral Detritus'] then send_command('put "S. Astral Detritus" sack all') moveditem = true end
 			if player.inventory['Fern Stone'] then send_command('put "Fern Stone" sack all') moveditem = true end
+			if player.inventory['Heroism Crystal'] then send_command('put "Heroism Crystal" sack all') moveditem = true end
+			if player.inventory['Refractive Crystal'] then send_command('put "Refractive Crystal" sack all') moveditem = true end
+			if player.inventory['Rusted I. Card'] then send_command('put "Rusted I. Card" sack all') moveditem = true end
+			if player.inventory['Black. I. Card'] then send_command('put "Black. I. Card" sack all') moveditem = true end
 			if player.inventory['Frayed Sack (Pel)'] then send_command('put "Frayed Sack (Pel)" sack all') moveditem = true end
 			if player.inventory['Frayed Sack (Tau)'] then send_command('put "Frayed Sack (Tau)" sack all') moveditem = true end
 			if player.inventory['Frayed Sack (Fer)'] then send_command('put "Frayed Sack (Fer)" sack all') moveditem = true end
@@ -1449,17 +1460,17 @@ end
 
 function check_auto_tank_ws()
 	if state.AutoWSMode.value and state.AutoTankMode.value and player.target.type == "MONSTER" and not moving and player.status == 'Engaged' and not silent_check_amnesia() then
-		if player.tp > 999 and data.equipment.relic_weapons:contains(player.equipment.main) and state.MaintainAftermath.value and (not buffactive['Aftermath']) then
+		if player.tp > 650 and data.equipment.relic_weapons:contains(player.equipment.main) and state.MaintainAftermath.value and (not buffactive['Aftermath']) then
 			windower.chat.input('/ws "'..data.weaponskills.relic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2
+			tickdelay = os.clock() + 0.2
 			return true
-		elseif player.tp > 999 and (buffactive['Aftermath: Lv.3'] or not state.MaintainAftermath.value or not data.equipment.mythic_weapons:contains(player.equipment.main)) then
+		elseif player.tp > 650 and (buffactive['Aftermath: Lv.3'] or not state.MaintainAftermath.value or not data.equipment.mythic_weapons:contains(player.equipment.main)) then
 			windower.chat.input('/ws "'..autows..'" <t>')
-			tickdelay = os.clock() + 2
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.tp == 3000 then
 			windower.chat.input('/ws "'..data.weaponskills.mythic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2
+			tickdelay = os.clock() + 0.2
 			return true
 		else
 			return false
@@ -1595,39 +1606,39 @@ function check_doomed()
 end
 
 function check_ws()
-	if state.AutoWSMode.value and not state.RngHelper.value and player.status == 'Engaged' and player.target and player.target.type == "MONSTER" and player.tp > 999 and not silent_check_amnesia() and not (player.target.distance > (19.7 + player.target.model_size)) then
+	if state.AutoWSMode.value and not state.RngHelper.value and player.status == 'Engaged' and player.target and player.target.type == "MONSTER" and player.tp > 650 and not silent_check_amnesia() and not (player.target.distance > (19.7 + player.target.model_size)) then
 
 	local available_ws = S(windower.ffxi.get_abilities().weapon_skills)
 		
 		if player.hpp < 41 and state.AutoWSRestore.value and available_ws:contains(47) and player.target.distance < (3.2 + player.target.model_size) then
 			windower.chat.input('/ws "Sanguine Blade" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.hpp < 41 and state.AutoWSRestore.value and available_ws:contains(105) and player.target.distance < (3.2 + player.target.model_size) then
 			windower.chat.input('/ws "Catastrophe" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.mpp < 31 and state.AutoWSRestore.value and available_ws:contains(109) and player.target.distance < (3.2 + player.target.model_size) then
 			windower.chat.input('/ws "Entropy" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.mpp < 31 and state.AutoWSRestore.value and available_ws:contains(171) and player.target.distance < (3.2 + player.target.model_size) then
 			windower.chat.input('/ws "Mystic Boon" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.target.distance > (3.2 + player.target.model_size) and not data.weaponskills.ranged:contains(autows) then
 			return false
 		elseif data.equipment.relic_weapons:contains(player.equipment.main) and state.MaintainAftermath.value and (not buffactive['Aftermath']) then
 			windower.chat.input('/ws "'..data.weaponskills.relic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif (buffactive['Aftermath: Lv.3'] or not state.MaintainAftermath.value or not data.equipment.mythic_weapons:contains(player.equipment.main)) and player.tp >= autowstp then
 			windower.chat.input('/ws "'..autows..'" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		elseif player.tp == 3000 then
 			windower.chat.input('/ws "'..data.weaponskills.mythic[player.equipment.main]..'" <t>')
-			tickdelay = os.clock() + 2.8
+			tickdelay = os.clock() + 0.2
 			return true
 		else
 			return false
@@ -2018,7 +2029,7 @@ function ammo_left()
 	local Wardrobe7Ammo = ((player.wardrobe7[player.equipment.ammo] or {}).count or 0)
 	local Wardrobe8Ammo = ((player.wardrobe8[player.equipment.ammo] or {}).count or 0)
 		
-	local AmmoLeft = InventoryAmmo + WardrobeAmmo + Wardrobe2Ammo + Wardrobe3Ammo + Wardrobe4Ammo + Wardrobe5Ammo + Wardrobe6Ammo + Wardrobe7Ammo + Wardrobe8Ammo    
+	local AmmoLeft = InventoryAmmo + WardrobeAmmo + Wardrobe2Ammo + Wardrobe3Ammo + Wardrobe4Ammo + Wardrobe5Ammo + Wardrobe6Ammo + Wardrobe7Ammo + Wardrobe8Ammo
 		
 	return AmmoLeft	
 end

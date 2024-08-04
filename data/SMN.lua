@@ -155,7 +155,7 @@ function job_setup()
 	state.AutoConvert = M(true, 'Auto Convert')
 	
 	autows = 'Spirit Taker'
-	autofood = 'Akamochi'
+	autofood = 'Grape Daifuku'
 	
 	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoNukeMode","PactSpamMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode"},{"AutoBuffMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","ElementalMode","CastingMode","TreasureMode",})
 end
@@ -327,6 +327,12 @@ function job_pet_aftercast(spell, spellMap, eventArgs)
 	if state.PactSpamMode.value == true and spell.type == 'BloodPactRage'then
 		abil_recasts = windower.ffxi.get_ability_recasts()
 		if abil_recasts[173] == 0 then
+			windower.chat.input('/pet "'..spell.name..'" <t>')
+		end
+	end
+	if state.PactSpamMode.value == true and spell.english == 'Mewing Lullaby' then
+		abil_recasts = windower.ffxi.get_ability_recasts()
+		if abil_recasts[174] == 0 then
 			windower.chat.input('/pet "'..spell.name..'" <t>')
 		end
 	end

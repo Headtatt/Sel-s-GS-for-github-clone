@@ -64,7 +64,7 @@ function job_setup()
 
 	autows = 'Tachi: Fudo'
 	rangedautows = "Apex Arrow"
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 
 	update_melee_groups()
 	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","TreasureMode",})
@@ -198,12 +198,15 @@ end
 -- Modify the default melee set after it was constructed.
 function job_customize_melee_set(meleeSet)
 
-    if state.Buff.Hasso and state.DefenseMode.value == 'None' and state.OffenseMode.value ~= 'FullAcc' then
+    if state.Buff.Hasso and state.DefenseMode.value == 'None' and state.OffenseMode.value ~= 'FullAcc' and not state.HybridMode.value == 'PDT' then
 		meleeSet = set_combine(meleeSet, sets.buff.Hasso)
 	elseif state.Buff.Seigan and state.Buff['Third Eye'] and not state.OffenseMode.value:contains('Acc') then
 		meleeSet = set_combine(meleeSet, sets.buff['Third Eye'])
     end
-
+	if state.OffenseMode.current == 'SB' and not (buffactive['Auspice'] or buffactive['Soul Enslavement'])  then
+		meleeSet = set_combine(meleeSet, sets.FullSB)
+	end
+	
     return meleeSet
 end
 

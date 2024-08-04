@@ -99,8 +99,8 @@ function init_include()
     -- General melee offense/defense modes, allowing for hybrid set builds, as well as idle/resting/weaponskill.
     -- This just defines the vars and sets the descriptions.  List modes with no values automatically
     -- get assigned a 'Normal' default value.
-	state.CraftingMode		  = M{['description'] = 'Crafting Mode','None','Alchemy','Bonecraft','Clothcraft','Cooking','Fishing','Goldsmithing','Leathercraft','Smithing','Woodworking'}
-	state.CraftQuality  	  = M{['description'] = 'Crafting Quality','Normal','HQ','NQ'}
+	state.CraftingMode		  = M{['description'] = 'CraftingMode','None','Alchemy','Bonecraft','Clothcraft','Cooking','Fishing','Goldsmithing','Leathercraft','Smithing','Woodworking'}
+	state.CraftingQuality  	  = M{['description'] = 'CraftingQuality','Normal','HQ','NQ'}
 	state.OffenseMode         = M{['description'] = 'Offense Mode'}
 	state.HybridMode          = M{['description'] = 'Hybrid Mode'}
 	state.RangedMode          = M{['description'] = 'Ranged Mode'}
@@ -134,7 +134,7 @@ function init_include()
 	state.AutoHolyWaterMode   = M(true, 'Auto Holy Water Mode')
 	state.AutoRemoveDoomMode  = M(true, 'Auto Remove Doom Mode')
 	state.AutoWSMode		  = M(false, 'Auto Weaponskill Mode')
-	state.AutoWSRestore		  = M(true, 'Auto Weaponskill Restore Mode')
+	state.AutoWSRestore		  = M(false, 'Auto Weaponskill Restore Mode')
 	state.AutoFoodMode		  = M(false, 'Auto Food Mode')
 	state.AutoSubMode 		  = M(false, 'Auto Sublimation Mode')
 	state.AutoCleanupMode  	  = M(false, 'Auto Cleanup Mode')
@@ -152,9 +152,11 @@ function init_include()
 	state.UnlockWeapons		  = M(false, 'Unlock Weapons')
 	state.SelfWarp2Block 	  = M(true, 'Block Warp2 on Self')
 	state.MiniQueue		 	  = M(true, 'MiniQueue')
-	state.PWUnlock		 	  = M(false, 'PWUnlock')
+	state.PWUnlock		 	  = M(true, 'PWUnlock')
 	
-
+    state.VRRing              = M{['description'] = 'VR Ring Auto-handling', 'On','Off'}
+	state.FotiaMode           = M{['description'] = 'FreeWS', 'Off','On'}
+	state.QuickMagic          = M{['description'] = 'InstantCast', 'On','Off'}
 	state.AutoBuffMode 		  = M{['description'] = 'Auto Buff Mode','Off','Auto'}
 	state.RuneElement 		  = M{['description'] = 'Rune Element','Ignis','Gelus','Flabra','Tellus','Sulpor','Unda','Lux','Tenebrae'}
 	state.ElementalMode 	  = M{['description'] = 'Elemental Mode', 'Fire','Ice','Wind','Earth','Lightning','Water','Light','Dark'}
@@ -359,19 +361,21 @@ function init_include()
 
 	if not selindrile_warned then
 		naughty_list = {'lua ','gearswap',' gs ','file','windower','plugin','addon','program','hack','bot ','bots ','botting','easyfarm'}
-		
+		naughtees = {'Selindrile','YourName'}
 		windower.raw_register_event('outgoing chunk', function(id, data, modified, injected, blocked)
-			if id == 0x0B6 and res.servers[windower.ffxi.get_info().server].en == 'Asura' then
+			if id == 0x0B6 and res.servers[windower.ffxi.get_info().server].en == 'Asura' then -- your server
                 local p = packets.parse('outgoing',data)
-                if p['Target Name'] == 'Selindrile' then
-					for i in pairs(naughty_list) do 
-						if p['Message']:contains(naughty_list[i]) then
-							windower.add_to_chat(123,'Message Aborted: Please do not message me about anything third party ingame.')
-							windower.add_to_chat(123,'Contact me on Discord: KalesAndRancor#5410 or https://discord.gg/ug6xtvQ')
-							return true
+				for i in pairs(naughtees) do
+					if p['Target Name']:contains(naughtees[i]) then
+						for i in pairs(naughty_list) do 
+							if p['Message']:contains(naughty_list[i]) then
+								windower.add_to_chat(123,'Message Aborted: Please do not message me about anything third party ingame.')
+								windower.add_to_chat(123,'Contact me on Discord: \'Your Discord\'')
+								return true
+							end
 						end
 					end
-                end
+				end
 			end
 		end)
 	end
@@ -1025,6 +1029,14 @@ end
 function default_post_precast(spell, spellMap, eventArgs)
 	if not eventArgs.handled then
 		if spell.action_type == 'Magic' then
+			if state.VRRing.value ~= 'Off' then
+			   if item_available("Medada's Ring") then 
+					equip({ring2="Medada's Ring"})
+			   end
+		    end	   
+			if spell.english ~= 'Impact' and spell.english ~= 'Death' and state.QuickMagic.value ~= 'Off' and sets.precast.FC.QuickMagic then
+				equip(sets.precast.FC.QuickMagic)
+			end
 			if spell.english:startswith('Utsusemi') then
 				if sets.precast.FC.Shadows and ((spell.english == 'Utsusemi: Ni' and player.main_job == 'NIN' and lastshadow == 'Utsusemi: San') or (spell.english == 'Utsusemi: Ichi' and lastshadow ~= 'Utsusemi: Ichi')) then
 					equip(sets.precast.FC.Shadows)
@@ -1033,6 +1045,22 @@ function default_post_precast(spell, spellMap, eventArgs)
 			
 		elseif spell.type == 'WeaponSkill' then
 
+					local WSset = standardize_set(get_precast_set(spell, spellMap))
+		
+					if state.FotiaMode.value ~= 'Off' then
+						equip(sets.Fotia)
+					end
+					if state.VRRing.value ~= 'Off' then
+					   if item_available("Ephramad's Ring") and sets.Ephramads and not ( WSset.ring1 == "Ephramad's Ring" or WSset.ring2 == "Ephramad's Ring") then
+					      equip(sets.Ephramads)                                                                                   
+					   elseif item_available("Cornelia's Ring") and sets.Cornelias and (not WSset.ring1 == "Cornelia's Ring" or WSset.ring2 == "Cornelia's Ring") then  
+					      equip(sets.Cornelias)
+					   elseif item_available("Lehko's Ring") and data.weaponskills.critical:contains(spell.english) and sets.Lehkos and (not WSset.ring1 == "Lehko's Ring" or WSset.ring2 == "Lehko's Ring") then
+					      equip(sets.Lehkos)
+					   end
+					end
+-- Have it default to ring2 in your sets.Ephramads/Cornelias/Lehkos in your user-globals or (Character)-globals file so this will handle
+-- equipping for any file that you haven't already went through and put it in ring1 just to save the effort editing		
 			if state.WeaponskillMode.value ~= 'Proc' and data.weaponskills.elemental:contains(spell.english) then
 				local distance = spell.target.distance - spell.target.model_size
 				local single_obi_intensity = 0
@@ -1145,6 +1173,11 @@ end
 function default_post_midcast(spell, spellMap, eventArgs)
 
 	if not eventArgs.handled then
+		if spell.action_type == 'Magic' and state.VRRing.value ~= 'Off' then
+			   if item_available("Medada's Ring") and is_nuke(spell, spellMap) and not state.Buff.Immanence then -- We dont want MAB when casting with immanence since higher dmg = higher nukewall incursion
+					equip({ring2="Medada's Ring"})
+			   end    
+		end
 		if not job_post_midcast and is_nuke(spell, spellMap) and state.MagicBurstMode.value ~= 'Off' and sets.MagicBurst then
 			equip(sets.MagicBurst)
 		end
@@ -1561,7 +1594,7 @@ function get_idle_set(petStatus)
 	end
 
 	--Apply time based gear.
-    if (state.IdleMode.value == 'Normal' or state.IdleMode.value:contains('Sphere')) and not pet.isvalid then
+    if (state.IdleMode.value == 'Normal' or state.IdleMode.value:contains('Sphere')) and not pet.isvalid or (state.IdleMode.value == 'Normal' and player.main_job == 'DRG') then
 	    if player.hpp < 80 then
 			if sets.ExtraRegen then idleSet = set_combine(idleSet, sets.ExtraRegen) end
 		end
@@ -1615,7 +1648,11 @@ function get_idle_set(petStatus)
 		elseif (world.area:contains("San d'Oria") or world.area == "Chateau d'Oraguille") and item_available("Kingdom Aketon") then
 			idleSet = set_combine(idleSet, {body="Kingdom Aketon"})
 		elseif world.area == "Mog Garden" and item_available("Jubilee Shirt") then
+			if state.CraftingMode.value == 'None' then
 			idleSet = set_combine(idleSet, {body="Jubilee Shirt"})
+			else
+			idleSet = set_combine(idleSet, sets.crafting[state.CraftingMode.value])
+			end
 		end
 	end
 
@@ -1776,10 +1813,13 @@ function get_melee_set()
 	if state.UnlockWeapons.value and sets.weapons[state.Weapons.value] then
 		meleeSet = set_combine(meleeSet, sets.weapons[state.Weapons.value])
 	end
-	
+	if state.VRRing.value ~= 'Off' then
+	   if sets.Lehkos and item_available("Lehko's Ring") then
+		  meleeSet = set_combine(meleeSet, sets.Lehkos)
+	   end
+	end
     return meleeSet
 end
-
 
 -- Returns the appropriate resting set based on current state values.
 -- Set construction order:
@@ -2380,7 +2420,7 @@ function state_change(stateField, newValue, oldValue)
 		end
 	elseif stateField == 'Capacity' and newValue == 'false' and data.equipment.cprings:contains(player.equipment.left_ring) then
             enable("ring1")
-	elseif stateField == 'Crafting Mode' then
+	elseif stateField == 'CraftingMode' then
 		enable('main','sub','range','ammo','head','neck','lear','rear','body','hands','lring','rring','back','waist','legs','feet')
 		if newValue == 'None' then
 			handle_update({'auto'})
@@ -2390,9 +2430,9 @@ function state_change(stateField, newValue, oldValue)
 				craftingset = set_combine(craftingset,sets.crafting[newValue])
 			end
 			
-			if state.CraftQuality.value == 'HQ' and sets.crafting.HQ then
+			if state.CraftingQuality.value == 'HQ' and sets.crafting.HQ then
 				craftingset = set_combine(craftingset,sets.crafting.HQ)
-			elseif state.CraftQuality.value == 'NQ' and sets.crafting[newValue] and sets.crafting[newValue].NQ then
+			elseif state.CraftingQuality.value == 'NQ' and sets.crafting[newValue] and sets.crafting[newValue].NQ then
 				craftingset = set_combine(craftingset,sets.crafting[newValue].NQ)
 			end
 			

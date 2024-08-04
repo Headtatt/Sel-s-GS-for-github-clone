@@ -72,7 +72,7 @@ function job_setup()
 	
 	autows = "Rudra's Storm"
 	rangedautows = "Last Stand"
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	
 	update_melee_groups()
 	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","IdleMode","Passive","RuneElement","TreasureMode",})
@@ -143,11 +143,12 @@ function job_post_precast(spell, spellMap, eventArgs)
     end
 	
 end
-
+--this is on account of the VRMission "Perfect Lucky Egg" TH ammo piece being added to the game
 function job_post_midcast(spell, spellMap, eventArgs)
     if state.TreasureMode.value ~= 'None' and spell.action_type == 'Ranged Attack' then
-        equip(sets.TreasureHunter)
+        equip(sets.RangedTreasureHunter)
     end
+	eventArgs.handled = true
 end
 
 -- Set eventArgs.handled to true if we don't want any automatic gear equipping to be done.

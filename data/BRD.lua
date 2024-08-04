@@ -83,7 +83,7 @@ function job_setup()
 	state.RecoverMode = M('35%', '60%', 'Always', 'Never')
 
 	autows = "Rudra's Storm"
-	autofood = 'Pear Crepe'
+	autofood = 'Grape Daifuku'
 	
 	state.AutoSongMode = M(false, 'Auto Song Mode')
 
@@ -458,11 +458,19 @@ function check_song()
 			tickdelay = os.clock() + 2
 			return true
 		elseif not buffactive.minuet then
-			windower.chat.input('/ma "Valor Minuet V" <me>')
+			windower.chat.input('/ma "Victory March" <me>')
 			tickdelay = os.clock() + 2
 			return true
 		elseif not buffactive.madrigal then
-			windower.send_command('gs c set ExtraSongsMode FullLength;input /ma "Blade Madrigal" <me>')
+			windower.send_command('gs c set ExtraSongsMode FullLength;input /ma "Valor Minuet V" <me>')
+			tickdelay = os.clock() + 2
+			return true
+		elseif not buffactive.etude then
+			windower.send_command('gs c set ExtraSongsMode FullLength;input /ma "Valor Minuet IV" <me>')
+			tickdelay = os.clock() + 2
+			return true
+		elseif buffactive.clarioncall then
+			windower.send_command('gs c set ExtraSongsMode FullLength;input /ma "Valor Minuet III" <me>')
 			tickdelay = os.clock() + 2
 			return true
 		else

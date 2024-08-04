@@ -64,7 +64,7 @@ function job_setup()
     state.Steps = M{['description']='Current Step', 'Quickstep','Box Step','Stutter Step'}
 	
 	autows = 'Resolution'
-	autofood = 'Miso Ramen'
+	autofood = 'Grape Daifuku'
 	
 	update_melee_groups()
 	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoTankMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoNukeMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","PhysicalDefenseMode","MagicalDefenseMode","ResistDefenseMode","TreasureMode",})

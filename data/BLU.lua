@@ -66,7 +66,7 @@ function job_setup()
 	state.LearningMode = M(false, 'Learning Mode')
 	state.AutoUnbridled = M(false, 'Auto Unbridled Mode')
 	autows = 'Chant Du Cygne'
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	
     blue_magic_maps = {}
     

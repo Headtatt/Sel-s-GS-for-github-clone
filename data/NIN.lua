@@ -58,11 +58,10 @@ function job_setup()
     state.Buff.Yonin = buffactive.Yonin or false
     state.Buff.Innin = buffactive.Innin or false
     state.Buff.Futae = buffactive.Futae or false
-	
-	state.Stance = M{['description']='Stance','Innin','Yonin','None'}
-
+	state.Buff.Sange = buffactive.Sange or false
+	state.Stance = M{['description']='Stance','Yonin','Innin','None'}
 	autows = "Blade: Shun"
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	
 	utsusemi_ni_cancel_delay = .1
 	
@@ -83,11 +82,11 @@ function job_filtered_action(spell, eventArgs)
 end
 
 function job_pretarget(spell, spellMap, eventArgs)
-    if spell.action_type == 'Ranged Attack' and (player.equipment.ammo == 'Togakushi Shuriken' or player.equipment.ammo == 'Happo Shuriken') then
+    if spell.action_type == 'Ranged Attack' and (player.equipment.ammo == 'Togakushi Shuriken' or player.equipment.ammo == 'Seki Shuriken') then
 		cancel_spell()
 		add_to_chat(123,'Abort: Don\'t throw your good ammo!')
-    elseif spell.english == 'Sange' and (player.equipment.ammo == 'Togakushi Shuriken' or player.equipment.ammo == 'Happo Shuriken') then
-		cancel_spell()
+    elseif spell.english == 'Sange' and (player.equipment.ammo == 'Togakushi Shuriken' or player.equipment.ammo == 'Seki Shuriken') then
+		equip({ammo="Happo Shuriken"})
 		add_to_chat(123,'Abort: Don\'t throw your good ammo!')
     end
 end
@@ -228,12 +227,16 @@ end
 
 -- Modify the default idle set after it was constructed.
 function job_customize_idle_set(idleSet)
-    if state.Buff.Migawari then
+	if state.Buff.Sange then
+        idleSet = set_combine(idleSet, sets.buff.Sange)
+    end
+	if state.Buff.Migawari then
         idleSet = set_combine(idleSet, sets.buff.Migawari)
     end
 
     return idleSet
 end
+
 
 function job_customize_kiting_set(kitingSet)
 	if player.status == 'Idle' and moving and state.DefenseMode.value == 'None' and (state.IdleMode.value == 'Normal' or state.IdleMode.value == 'Sphere') then
@@ -261,7 +264,9 @@ function job_customize_melee_set(meleeSet)
 	if state.Buff.Migawari then
         meleeSet = set_combine(meleeSet, sets.buff.Migawari)
     end
-
+	if state.Buff.Sange then
+        meleeSet = set_combine(meleeSet, sets.buff.Sange)
+    end
     return meleeSet
 end
 

@@ -63,9 +63,9 @@ function job_setup()
 	
 	autows = "Last Stand"
 	rangedautows = "Last Stand"
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	statusammo = nil
-	ammostock = 198
+	ammostock = 98
 	
 	WeaponType =  {['Yoichinoyumi'] = "Bow",
 				   ['Gandiva'] = "Bow",
@@ -75,13 +75,14 @@ function job_setup()
                    ['Armageddon'] = "Gun",
                    ['Fomalhaut'] = "Gun",
 				   ['Ataktos'] = "Gun",
+				   ['Anarchy +3'] = "Gun",
                    ['Gastraphetes'] = "Crossbow",
                    }
 	
 	DefaultAmmo = {
 		['Bow']  = {['Default'] = "Chrono Arrow",
 					['WS'] = "Chrono Arrow",
-					['Acc'] = "Chrono Arrow",
+					['Acc'] = "Yoichi's Arrow",
 					['Magic'] = "Chrono Arrow",
 					['MagicAcc'] = "Chrono Arrow",
 					['Unlimited'] = "Hauksbok Arrow",
@@ -283,7 +284,7 @@ end
 
 -- Called by the 'update' self-command.
 function job_update(cmdParams, eventArgs)
-    if cmdParams[1] == 'user' and not data.areas.cities:contains(world.area) then
+    if cmdParams[1] == 'user' and not (data.areas.cities:contains(world.area) or (state.Buff['SJ Restriction'] )then
         if not buffactive['Velocity Shot'] then
             send_command('@input /ja "Velocity Shot" <me>')
         end

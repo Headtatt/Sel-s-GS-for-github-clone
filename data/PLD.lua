@@ -478,7 +478,7 @@ function update_melee_groups()
 end
 
 function check_majesty()
-	if state.AutoMajesty.value and player.in_combat and not buffactive.Majesty and not silent_check_amnesia() then
+	if state.AutoMajesty.value and player.in_combat and not buffactive.Majesty and not silent_check_amnesia() and not state.Buff['SJ Restriction']	then
 		local abil_recasts = windower.ffxi.get_ability_recasts()
 		
 		if abil_recasts[150] < latency then

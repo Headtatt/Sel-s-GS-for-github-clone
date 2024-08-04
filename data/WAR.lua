@@ -63,8 +63,11 @@ function job_setup()
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
 
-	autows = "Ukko's Fury"
-	autofood = 'Soy Ramen'
+	autows = 'Savage Blade'
+	autofood = 'Grape Daifuku'
+	
+	Ikenga_vest_bonus = 190  -- It is 190 at R25. Don't edit here, the same variable is in place in both COR and RNG gearfiles.
+	Ikenga_axe_bonus = 300
 	
 	init_job_states({"Capacity","AutoRuneMode","AutoTrustMode","AutoWSMode","AutoShadowMode","AutoFoodMode","AutoStunMode","AutoDefenseMode",},{"AutoBuffMode","AutoSambaMode","Weapons","OffenseMode","WeaponskillMode","Stance","IdleMode","Passive","RuneElement","TreasureMode",})
 end
@@ -130,7 +133,9 @@ function job_customize_melee_set(meleeSet)
 	if not state.OffenseMode.value:contains('Acc') and state.HybridMode.value == 'Normal' and buffactive['Restraint'] then
 		meleeSet = set_combine(meleeSet, sets.buff.Restraint)
 	end
-	
+	if state.OffenseMode.current == 'SB' and not buffactive['Auspice'] then
+		meleeSet = set_combine(meleeSet, sets.FullSB)
+	end
     return meleeSet
 end
 
@@ -300,10 +305,23 @@ function check_buff()
 			windower.chat.input('/ja "Aggressor" <me>')
 			tickdelay = os.clock() + 1.1
 			return true
-		else
+		elseif (not buffactive['Blood Rage'] and not buffactive['Warcry']) and abil_recasts[2] < latency then
+			windower.chat.input('/ja "Warcry" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+--[[		elseif player.sub_job == 'SAM' and not buffactive['Meditate'] and abil_recasts[134] < latency then
+			windower.chat.input('/ja "Meditate" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+		elseif player.sub_job == 'SAM' and not buffactive['Sekkanoki']and abil_recasts[140] < latency then
+			windower.chat.input('/ja "Sekkanoki" <me>')
+			tickdelay = os.clock() + 1.1
+			return true
+]]		else
 			return false
 		end
 	end
 		
 	return false
 end
+

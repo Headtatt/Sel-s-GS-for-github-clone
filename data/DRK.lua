@@ -60,10 +60,10 @@ function job_setup()
     state.Buff.Hasso = buffactive.Hasso or false
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
-	state.DrainSwapWeaponMode = M{'Never','300','1000','Always'}
+	state.DrainSwapWeaponMode = M{'1000','300','Always','Never',}
 	
-	autows = 'Resolution'
-	autofood = 'Soy Ramen'
+	autows = 'Torcleaver'
+	autofood = 'Grape Daifuku'
 	
 	update_melee_groups()
 
@@ -134,7 +134,13 @@ function job_customize_melee_set(meleeSet)
     if state.Buff.Souleater and state.DefenseMode.current == 'None' then
         meleeSet = set_combine(meleeSet, sets.buff.Souleater)
     end
-
+--[[	if buffactive['480'] and hpp > 80 then
+        meleeSet = set_combine(meleeSet, sets.buff['Scarlet Delirium'])
+    end
+]]
+	if state.OffenseMode.current == 'SB' and not (buffactive['Auspice'] or buffactive['Soul Enslavement'])  then
+		meleeSet = set_combine(meleeSet, sets.FullSB)
+	end
     return meleeSet
 end
 
