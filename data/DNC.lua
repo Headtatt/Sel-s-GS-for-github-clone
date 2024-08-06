@@ -87,7 +87,7 @@ function job_setup()
 	
     state.MainStep = M{['description']='Main Step', 'Box Step','Quickstep','Feather Step','Stutter Step'}
     state.AltStep = M{['description']='Alt Step', 'Feather Step','Quickstep','Stutter Step','Box Step'}
-    state.UseAltStep = M(true, 'Use Alt Step')
+    state.UseAltStep = M(false, 'Use Alt Step')
     state.CurrentStep = M{['description']='Current Step', 'Main', 'Alt'}
 
 	state.AutoPrestoMode = M(true, 'Auto Presto Mode')
@@ -95,7 +95,7 @@ function job_setup()
 
 
 	autows = "Rudra's Storm"
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	
 	function calculate_step_feet_reduction()
 		local tp_reduction = 0
@@ -286,10 +286,10 @@ function display_current_job_state(eventArgs)
     end
     
     msg = msg .. ']'
-
-    if state.SelectStepTarget.value == true then
-        steps = steps..' (Targetted)'
-    end
+-- as far as I can tell this was mistakenly included from the old motes gearswap file, it has never done anything for me but throw errors / return nil
+--    if state.SelectStepTarget.value == true then
+--        steps = steps..' (Targetted)'
+--    end
 
     add_to_chat(122, msg)
 

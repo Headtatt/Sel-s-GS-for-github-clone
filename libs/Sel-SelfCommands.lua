@@ -421,7 +421,8 @@ function handle_weapons(cmdParams)
 		end
 	end
 
-	if state.DisplayMode.value then update_job_states()	end
+	if state.DisplayMode.value then update_job_states()	
+	end
 end
 
 function equip_weaponset(cmdParams)

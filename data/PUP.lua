@@ -79,7 +79,7 @@ function job_setup()
 	state.PetEnmityGear	 = M(true, 'Pet Enmity Gear')
 
     autows = "Victory Smite"
-	autofood = 'Akamochi'
+	autofood = 'Grape Daifuku'
 	lastpettp = 0
 	deactivatehpp = 100
 	repairhpp = 45

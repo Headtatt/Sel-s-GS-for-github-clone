@@ -177,6 +177,12 @@ data.weaponskills.empyrean = {
     ["Gandiva"] = "Jishnu's Radiance",
     ["Armageddon"] = "Wildfire"}
 
+--Weaponskills that are capable of critical hit. (Need some help with this, I guessed on some of the Prime WSs based on DEX modifiers)
+data.weaponskills.critical = S{"Backhand Blow", "Ascetic's Fury", "Stringing Pummel", "Victory Smite", "Evisceration", "Mercy Stroke", "Mandalic Stab", "Mordant Rime",
+"Pyrrhic Kleos", "Rudra's Storm", "Vorpal Blade", "Expiacion", "Chant du Cygne", "Power Slash", "Scourge", "Rampage", "Keen Edge",
+"Vorpal Scythe", "Vorpal Thrust", "Skewer", "Impulse Drive", "Drakesbane", "Blade: Rin", "Blade: Jin", "Blade: Hi", "True Strike",
+"Hexa Strike", "Dulling Arrow", "Arching Arrow", "Sniper Shot", "Heavy Shot", "Ruthless Stroke", "Imperator", "Blitz", "Zesho Meppo",
+"Tachi: Mumei", "Terminus"}
 -- Weaponskills that can be used at range.
 data.weaponskills.ranged = S{"Flaming Arrow","Piercing Arrow","Dulling Arrow","Sidewinder","Arching Arrow",
     "Empyreal Arrow","Refulgent Arrow","Apex Arrow","Namas Arrow","Jishnu's Radiance",
@@ -376,7 +382,8 @@ data.equipment.rema_ranged_weapons_ammo = {
 	['Death Penalty'] = 'Living Bullet',
 	['Armageddon'] = 'Devastating Bullet',
 	['Fail-Not'] = 'Chrono Arrow',
-	['Gandiva'] = "Artemis's Arrow",
+	--['Gandiva'] = "Artemis's Arrow",
+	['Gandiva'] = 'Chrono Arrow',
 	['Gastraphetes'] = "Quelling Bolt",
 	['Yoichinoyumi'] = "Yoichi's Arrow",
 	['Annihilator'] = 'Eradicating Bullet'}
@@ -386,7 +393,8 @@ data.equipment.rema_ranged_weapons_ammo_pouch = {
 	['Death Penalty'] = 'Liv. Bul. Pouch',
 	['Armageddon'] = 'Dev. Bul. Pouch',
 	['Fail-Not'] = 'Chrono Quiver',
-	['Gandiva'] = "Artemis's Quiver",
+	--['Gandiva'] = "Artemis's Quiver",
+	['Gandiva'] = 'Chrono Quiver',
 	['Gastraphetes'] = "Quelling B. Quiver",
 	['Yoichinoyumi'] = "Yoichi's Quiver",
 	['Annihilator'] = 'Era. Bul. Pouch'}
@@ -711,7 +719,17 @@ data.areas.laggy = S{
 	"Reisenjima",
 	"Escha - Zi'Tah",
 	"Escha - Ru'Aun",
-	"Outer Ra'Kaznar [U]",
+	"Outer Ra'Kaznar [U1]",
+	"Outer Ra'Kaznar [U2]",
+	"Outer Ra'Kaznar [U3]",
+	"Walk Of Echoes [P1]",
+	"Walk Of Echoes [P2]",
+}
+
+data.areas.odyssey = S{
+	"Walk Of Echoes [P1]",
+	"Walk Of Echoes [P2]",
+	"Walk Of Echoes [P3]",
 }
 
 -------------------------------------------------------------------------------------------------------------------

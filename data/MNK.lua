@@ -62,7 +62,7 @@ function job_setup()
 	state.AutoBoost = M(false, 'Auto Boost Mode')
 	
 	autows = 'Victory Smite'
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 	
     info.impetus_hit_count = 0
     --windower.raw_register_event('action', on_action_for_impetus)

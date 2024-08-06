@@ -65,7 +65,7 @@ function job_setup()
 	state.RecoverMode = M('35%', '60%', 'Always', 'Never')
 	
 	autows = "Savage Blade"
-	autofood = 'Pear Crepe'
+	autofood = 'Grape Daifuku'
 	enspell = ''
 	
 	update_melee_groups()
@@ -527,7 +527,9 @@ function check_arts()
 
  		local abil_recasts = windower.ffxi.get_ability_recasts()	
 
- 		if not buffactive.Composure then	
+ 		if not buffactive.Composure and not state.Buff['SJ Restriction'] then	
+			
+			
 			local abil_recasts = windower.ffxi.get_ability_recasts()	
 			if abil_recasts[50] < latency then	
 				tickdelay = os.clock() + 1.1

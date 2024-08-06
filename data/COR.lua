@@ -62,7 +62,7 @@ end
 -- Setup vars that are user-independent.  state.Buff vars initialized here will automatically be tracked.
 function job_setup()
 	-- Whether to use Compensator under a certain threshhold even when weapons are locked.
-	state.CompensatorMode = M{'Never','300','1000','Always'}
+	state.CompensatorMode = M{'1000','Never','300','Always'}
 	-- Whether to automatically generate bullets.
 	state.AutoAmmoMode = M(true,'Auto Ammo Mode')
 	state.UseDefaultAmmo = M(true,'Use Default Ammo')
@@ -74,7 +74,7 @@ function job_setup()
 	
 	autows = 'Leaden Salute'
 	rangedautows = 'Last Stand'
-	autofood = 'Sublime Sushi'
+	autofood = 'Grape Daifuku'
 	ammostock = 198
 
     define_roll_values()
@@ -154,7 +154,7 @@ end
 
 function job_midcast(spell, action, spellMap, eventArgs)
 	--Probably overkill but better safe than sorry.
-	if spell.action_type == 'Ranged Attack' then
+	if spell.action_type == 'Ranged Attack' or spell.action_type == 'Weaponskill' then
 		if player.equipment.ammo:startswith('Hauksbok') or player.equipment.ammo == "Animikii Bullet" then
 			enable('ammo')
 			equip({ammo=empty})
@@ -241,11 +241,12 @@ function job_post_precast(spell, spellMap, eventArgs)
 			end
 		end
 	elseif spell.type == 'CorsairShot' and not (spell.english == 'Light Shot' or spell.english == 'Dark Shot') then
-		if (state.WeaponskillMode.value == "Proc" or state.CastingMode.value == "Proc") and sets.precast.CorsairShot.Proc then
+		if state.CastingMode.value == "Proc" and sets.precast.CorsairShot.Proc then
 			equip(sets.precast.CorsairShot.Proc)
 		elseif state.CastingMode.value == 'Fodder' and sets.precast.CorsairShot.Damage then
 			equip(sets.precast.CorsairShot.Damage)
-			
+		elseif state.CastingMode.value == 'Triple' and sets.precast.CorsairShot.Triple then
+			equip(sets.precast.CorsairShot.Triple)
 			local distance = spell.target.distance - spell.target.model_size
 			local single_obi_intensity = 0
 			local orpheus_intensity = 0
@@ -314,6 +315,7 @@ function job_post_precast(spell, spellMap, eventArgs)
 	end
 end
 
+
 -------------------------------------------------------------------------------------------------------------------
 -- Utility functions specific to this job.
 -------------------------------------------------------------------------------------------------------------------
@@ -372,7 +374,8 @@ function do_bullet_checks(spell, spellMap, eventArgs)
 		cancel_spell()
 		eventArgs.cancel = true
 		enable('ammo')
-
+		--equip({ammo=empty})
+		
 		if sets.weapons[state.Weapons.value].ammo and item_available(sets.weapons[state.Weapons.value].ammo) then
 			equip({ammo=sets.weapons[state.Weapons.value].ammo})
 			disable('ammo')
@@ -421,7 +424,10 @@ function do_bullet_checks(spell, spellMap, eventArgs)
         elseif spell.type == 'WeaponSkill' and (player.equipment.ammo == gear.RAbullet or player.equipment.ammo == gear.WSbullet or player.equipment.ammo == gear.MAbullet) then
             add_to_chat(217, 'No weaponskill ammo available, using equipped ammo: ('..player.equipment.ammo..')')
             return
-        else
+		elseif item_available("Eminent Bullet") then
+			equip({ammo="Eminent Bullet"})
+			return
+		else
             add_to_chat(217, 'No ammo ('..tostring(bullet_name)..') available for that action.')
             eventArgs.cancel = true
             return
@@ -429,12 +435,12 @@ function do_bullet_checks(spell, spellMap, eventArgs)
     end
     
     -- Don't allow shooting or weaponskilling with ammo reserved for quick draw.
-    if spell.type ~= 'CorsairShot' and bullet_name == gear.QDbullet and (available_bullets <= bullet_min_count) then
+   if spell.type ~= 'CorsairShot' and bullet_name == gear.QDbullet and (available_bullets <= bullet_min_count) then
         add_to_chat(217, 'No ammo will be left for Quick Draw.  Cancelling.')
         eventArgs.cancel = true
         return
     end
-    
+   
     -- Low ammo warning.
     if spell.type ~= 'CorsairShot' and (available_bullets > 0) and (available_bullets <= options.ammo_warning_limit) then
         local msg = '****  LOW AMMO WARNING: '..bullet_name..' ****'

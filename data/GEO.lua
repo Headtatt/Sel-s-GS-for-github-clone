@@ -62,11 +62,11 @@ function job_setup()
 	state.RecoverMode = M('35%', '60%', 'Always', 'Never')
 
 	autows = 'Realmrazer'
-	autofood = 'Miso Ramen'
-	autoindi = 'Torpor'
-	autoentrust = 'Fury'
+	autofood = 'Grape Daifuku'
+	autoindi = 'Malaise'
+	autoentrust = 'Refresh'
 	autoentrustee = '<p1>'
-	autogeo = 'Frailty'
+	autogeo = 'Haste'
 	last_indi = nil
 	last_geo = nil
 	blazelocked = false
@@ -223,11 +223,11 @@ function job_post_midcast(spell, spellMap, eventArgs)
 			end
 		end
 
-    elseif spell.skill == 'Geomancy' then
+    elseif spell.skill == 'Geomancy' then           
 		if spell.english:startswith('Geo-') then
-			if state.Buff['Blaze of Glory'] and sets.buff['Blaze of Glory'] then
+			if state.Buff['Blaze of Glory'] and sets.buff['Blaze of Glory'] then     --we don't just want more HP for our bubbles while blaze is up.
 				equip(sets.buff['Blaze of Glory'])
-				disable('head')
+--				disable('head')
 				blazelocked = true
 			end
 			
@@ -354,13 +354,19 @@ function job_customize_idle_set(idleSet)
             idleSet = set_combine(idleSet, sets.buff.DTSublimation)
         end
     end
-
+	if (pet.isvalid and pet.hpp > 68) then  
+		equip(sets.buff['Blaze Of Glory'])
+		blazelocked = true
+		--disable('head')
+	else
+	  blazelocked = false
+		--enable('head')
+	end
     if state.IdleMode.value == 'Normal' or state.IdleMode.value:contains('Sphere') then
 		if player.mpp < 51 then
 			if sets.latent_refresh then
 				idleSet = set_combine(idleSet, sets.latent_refresh)
 			end
-			
 			if (state.Weapons.value == 'None' or state.UnlockWeapons.value) and idleSet.main then
 				local main_table = get_item_table(idleSet.main)
 
@@ -393,10 +399,10 @@ function job_pet_change(pet, gain)
 		used_ecliptic = false
 	end
 
-    if blazelocked then
-		enable('head')
-		blazelocked = false
-	end
+ --   if pet.isvalid then
+--		equip(sets.buff['Blaze Of Glory'])
+--		blazelocked = true
+--	end
 end
 
 -- Function to display the current relevant user state when doing an update.
@@ -761,3 +767,4 @@ buff_spell_lists = {
 		{Name='Phalanx',	Buff='Phalanx',		SpellID=106,	Reapply=false},
 	},
 }
+

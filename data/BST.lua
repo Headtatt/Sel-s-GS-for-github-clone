@@ -235,7 +235,7 @@ function job_setup()
 	UnleashLocked = false
 
 	autows = 'Cloudsplitter'
-	autofood = 'Akamochi'
+	autofood = 'Grape Daifuku'
 
 	base_chargetimer = 30
 

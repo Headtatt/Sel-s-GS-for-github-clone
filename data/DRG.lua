@@ -59,10 +59,11 @@ function job_setup()
     state.Buff.Seigan = buffactive.Seigan or false
 	state.Stance = M{['description']='Stance','Hasso','Seigan','None'}
 	state.AutoJumpMode = M(false, 'Auto Jump Mode')
+	state.AutoSuperJumpMode = M(true, 'Autohshit Mode')
 	state.AutoBondMode = M(true, 'Auto Bond Mode')
 	
 	autows = 'Stardiver'
-	autofood = 'Soy Ramen'
+	autofood = 'Grape Daifuku'
 
 	Breath_HPP = 60
 	
@@ -120,8 +121,8 @@ function job_post_precast(spell, spellMap, eventArgs)
 	elseif spell.type == 'JobAbility' then
 		if spell.english:endswith('Jump') then
 			if sets.precast.JA[spell.english] then
-				if sets.precast.JA[spell.english][state.OffenseMode.value] then
-					equip(sets.precast.JA[spell.english][state.OffenseMode.value])
+				if sets.precast.JA[spell.english][state.CastingMode.value] then
+					equip(sets.precast.JA[spell.english][state.CastingMode.value])
 				end
 			end
 		end
@@ -152,13 +153,13 @@ end
 
 function job_aftercast(spell, spellMap, eventArgs)
 	if pet.isvalid then
-		if (spell.action_type == 'Magic' and player.hpp < Breath_HPP) or spell.english == 'Steady Wing' or spell.english == 'Restoring Breath' then
+		if (spell.action_type == 'Magic' and player.hpp < Breath_HPP) or spell.english == 'Restoring Breath' then
 			petWillAct = os.clock()
-			equip(sets.HealingBreath)
+			equip(sets.midcast.HealingBreath)
 			eventArgs.handled = true
-		elseif spell.english == 'Smiting Breath' and sets.SmitingBreath then
+		elseif spell.english == 'Smiting Breath' and sets.midcast.SmitingBreath then
 			petWillAct = os.clock()
-			equip(sets.SmitingBreath)
+			equip(sets.midcast.SmitingBreath)
 			eventArgs.handled = true
 		end
 	end

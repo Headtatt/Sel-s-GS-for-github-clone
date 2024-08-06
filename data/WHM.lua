@@ -58,9 +58,9 @@ function job_setup()
 	state.AutoCaress = M(true, 'Auto Caress Mode')
 	state.Gambanteinn = M(false, 'Gambanteinn Cursna Mode')
 	state.BlockLowDevotion = M(true, 'Block Low Devotion')
-	
+	state.AutoArts 	= M(true, 'AutoArts') 		 --Set this to false if you don't want to automatically try to keep up Solace/Arts.
 	autows = 'Mystic Boon'
-	autofood = 'Miso Ramen'
+	autofood = 'Grape Daifuku'
 	
 	state.ElementalMode = M{['description'] = 'Elemental Mode','Light','Dark','Fire','Ice','Wind','Earth','Lightning','Water',}
 
