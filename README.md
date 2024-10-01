@@ -59,7 +59,14 @@ Setting up my Gearswaps and Github updating.
     for each of your characters' names. ~~https://www.dropbox.com/s/wquioii9r16oho2/MoveData.png?dl=0~~
     Rename all the files inside that folder as well, you can use Rename.bat (If it doesn't work
     you will have to rename these files manually.
-    ~~https://www.dropbox.com/s/lpz3t8va77mvh17/Charactername.png?dl=0~~
+
+Linux users:
+
+You can use the Rename.sh file for automatically replace the names. `./Rename.sh`.
+
+If you get an permission error, chmod the script first. `sudo chmod +x Rename.sh` 
+
+~~https://www.dropbox.com/s/lpz3t8va77mvh17/Charactername.png?dl=0~~
     
 10.) For full functionality my gearswap and init files do depend on a few other addons that can
     be found in your launcher, I'll list them here: Addons: Shortcuts, Cancel, Itemizer. Plugins: Timers, Run    
