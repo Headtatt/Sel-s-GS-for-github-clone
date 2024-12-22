@@ -359,7 +359,8 @@ function update_active_stratagems()
     state.Buff['Celerity'] = buffactive['Celerity'] or false
     state.Buff['Alacrity'] = buffactive['Alacrity'] or false
 	state.Buff['Manifestation'] = buffactive['Manifestation'] or false
-
+	
+	state.Buff['Tabula Rasa'] = buffactive['Tabula Rasa'] or false
     state.Buff['Klimaform'] = buffactive['Klimaform'] or false
 end
 
